@@ -1,5 +1,5 @@
-// PubNub = require('pubnub');      ES5
-import PubNub from 'pubnub';        ES6
+PubNub = require("pubnub"); //ES5
+//import PubNub from 'pubnub';        //ES6
  
 var pubnub = new PubNub({
     subscribeKey: "sub-c-59ea358c-ace2-11e6-b37b-02ee2ddab7fe",
@@ -37,5 +37,5 @@ pubnub.addListener({
 pubnub.subscribe({
     channels: ["hello_world"],
     withPresence: true // also subscribe to presence instances.
-})
+});
 
