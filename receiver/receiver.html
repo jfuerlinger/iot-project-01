@@ -1,0 +1,57 @@
+<html>
+
+<body>
+
+    <!-- View the Full Documentation. -->
+    <!-- Include the PubNub Library -->
+    <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.2.5.js"></script>
+
+    <!-- Instantiate PubNub -->
+    <script type="text/javascript">
+
+function publish() {
+   
+    pubnub = new PubNub({
+      publishKey: 'pub-c-aec2c9d2-5afc-4677-993a-27da78960aec',
+      subscribeKey: 'sub-c-59ea358c-ace2-11e6-b37b-02ee2ddab7fe',
+      logVerbosity: true
+    })
+       
+    // function publishSampleMessage() {
+    //     console.log("Since we're publishing on subscribe connectEvent, we're sure we'll receive the following publish.");
+    //     var publishConfig = {
+    //         channel : "hello_world",
+    //         message : "Hello from PubNub Docs!"
+    //     }
+    //     pubnub.publish(publishConfig, function(status, response) {
+    //         console.log(status, response);
+    //     })     
+    // }
+       
+    pubnub.addListener({
+        // status: function(statusEvent) {
+        //     if (statusEvent.category === "PNConnectedCategory") {
+        //         publishSampleMessage();
+        //     }
+        // },
+        message: function(message) {
+            //console.log("New Message!!", message);
+            console.log("Message received: " + message.message);
+        },
+        presence: function(presenceEvent) {
+            // handle presence
+        }
+    })      
+    console.log("Subscribing..");
+    pubnub.subscribe({
+        channels: ['hello_world'] 
+    });
+};
+
+publish();
+
+</script>
+
+</body>
+
+</html>
