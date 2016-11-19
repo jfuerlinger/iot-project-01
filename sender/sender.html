@@ -1,8 +1,20 @@
 <html>
 
 <body>
-    <input type="text" id="txtMessage" />
-    <input type="button" value="Send message" onclick="sendMessage();" />
+    <fieldset>
+        <legend>Send Message</legend>
+        <input type="text" id="txtMessage" />
+        <input type="button" value="Send message" onclick="sendMessage();" />
+    </fieldset>
+    <fieldset>
+        <legend>Send Command</legend>
+        <select name="cmbCommand">
+    <option value="takePicture">Take Picture</option>
+    <option value="enableLed">Enable Led</option>
+    <option value="disableLed">Disable Led</option>
+    <input type="button" value="Send message" onclick="sendCommand();" />
+  </select>
+    </fieldset>
     <!-- View the Full Documentation. -->
     <!-- Include the PubNub Library -->
     <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.2.5.js"></script>
@@ -10,19 +22,38 @@
     <script type="text/javascript">
 
 var pubnub = null;
+var channelName = "IoTChannel"; 
+
 
 function sendMessage() {
-    var publishConfig = {
-            channel : "hello_world",
-            message : document.getElementById("txtMessage").value,
-            storeInHistory: true,
-            meta: { firstname: "Joe", lastname: "Fürlinger"}
-
-    }
-    pubnub.publish(publishConfig, function(status, response) {
-            console.log(status, response);
-    })
+    pubnub.publish(
+        {
+            channel : channelName,
+            message : { 
+                command: "displayMessage",
+                message: document.getElementById("txtMessage").value 
+            }
+        }, 
+        function(status, response) {
+                console.log(status, response);
+        }
+    );
 }
+
+function sendCommand() {
+    pubnub.publish(
+        {
+            channel : channelName,
+            message : { 
+                command:  document.getElementById("cmbCommand").value
+            }
+        }, 
+        function(status, response) {
+                console.log(status, response);
+        }
+    );
+}
+
 
 
 function init() {
@@ -62,7 +93,7 @@ function init() {
     })      
     console.log("Subscribing..");
     pubnub.subscribe({
-        channels: ['hello_world'] 
+        channels: [channelName] 
     });
 };
 
