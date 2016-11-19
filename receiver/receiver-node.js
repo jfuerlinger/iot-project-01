@@ -1,4 +1,4 @@
-PubNub = require("pubnub"); 
+PubNub = require("pubnub");
 var gpio = require("pi-gpio");
 
 var channelName = "IoTChannel";
@@ -32,20 +32,12 @@ pubnub.addListener({
                 break;
             case "enableLed":
                 console.log("Enabling the LED ...");
-                gpio.open(gpioLedPin, "output", function (err) { 
-                    gpio.write(gpioLedPin, 1, function(error) {
-                        gpio.close(gpioLedPin);
-                    });
-                });
+                gpio.write(gpioLedPin, 1);
                 console.log("Done.");
                 break;
             case "disableLed":
                 console.log("Disabling the LED ...");
-                gpio.open(gpioLedPin, "output", function (err) { 
-                    gpio.write(gpioLedPin, 0, function(error) {
-                        gpio.close(gpioLedPin);
-                    });
-                });
+                gpio.write(gpioLedPin, 0);
                 console.log("Done.");
                 break;
         }
@@ -73,3 +65,12 @@ pubnub.subscribe({
     withPresence: true // also subscribe to presence instances.
 });
 console.log(">> Done.");
+
+console.log(">> Initializing GPIO ...");
+gpio.open(gpioLedPin, "output");
+console.log(">> Done.");
+
+process.on('SIGINT', function () {
+  console.log('Got SIGINT. Press Control-D to exit.');
+  gpio.close(gpioLedPin);
+});
