@@ -44,15 +44,17 @@ pubnub.addListener({
 
                 exec(cmd, function (error, stdout, stderr) {
 
+                    console.log("Picture taken.");
+                });
+
+                setTimeout(function () {
                     var streamCloudinary = cloudinary.uploader.upload_stream(function (result) {
                         console.log(result)
                         console.log("Upload done.");
                     });
-                    var streamInput = fs.createReadStream(fileName).pipe(streamCloudinary)
+                    var streamInput = fs.createReadStream(fileName).pipe(streamCloudinary);
+                }, 5000);
 
-
-                    console.log("Picture taken.");
-                });
 
                 break;
             case "enableLed":
