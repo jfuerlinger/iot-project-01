@@ -3,6 +3,7 @@ var gpio = require("pi-gpio");
 var exec = require('child_process').exec;
 var moment = require('moment');
 var cloudinary = require('cloudinary');
+var fs = require('fs');
 
 
 var channelName = "IoTChannel";
@@ -43,12 +44,13 @@ pubnub.addListener({
 
                 exec(cmd, function (error, stdout, stderr) {
 
-                    console.log(error);
-                    cloudinary.uploader.upload(fileName, function (result) {
+                    var readStream = fs.createReadStream(fileName);
+                    cloudinary.uploader.upload(readStream, function (result) {
                         console.log(result)
+                        console.log("Upload done.");
                     });
 
-                    console.log("Done.");
+                    console.log("Picture taken.");
                 });
 
                 break;
