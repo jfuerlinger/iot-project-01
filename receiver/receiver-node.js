@@ -37,8 +37,7 @@ pubnub.addListener({
                 break;
             case "takePicture":
                 console.log("Taking a picture ...");
-                var fileName = "~/Pictures/img_" + moment().format("YYYYMMD_HHmmss") + ".jpg";
-                console.log(fileName);
+                var fileName = "/home/pi/Pictures/img_" + moment().format("YYYYMMD_HHmmss") + ".jpg";
                 var cmd = "fswebcam " + fileName;
                 console.log(cmd);
 
