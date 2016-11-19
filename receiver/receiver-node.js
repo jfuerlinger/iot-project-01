@@ -49,9 +49,9 @@ pubnub.addListener({
     }
 });
 
-console.log("Subscribing ...");
+console.log(">> Subscribing ...");
 pubnub.subscribe({
     channels: [channelName],
     withPresence: true // also subscribe to presence instances.
 });
-console.log("Done");
+console.log(">> Done");
