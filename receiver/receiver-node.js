@@ -33,14 +33,18 @@ pubnub.addListener({
             case "enableLed":
                 console.log("Enabling the LED ...");
                 gpio.open(gpioLedPin, "output", function (err) { 
-                    gpio.write(gpioLedPin, 1);
+                    gpio.write(gpioLedPin, 1, function(error) {
+                        gpio.close(gpioLedPin);
+                    });
                 });
                 console.log("Done.");
                 break;
             case "disableLed":
                 console.log("Disabling the LED ...");
                 gpio.open(gpioLedPin, "output", function (err) { 
-                    gpio.write(gpioLedPin, 0);
+                    gpio.write(gpioLedPin, 0, function(error) {
+                        gpio.close(gpioLedPin);
+                    });
                 });
                 console.log("Done.");
                 break;
