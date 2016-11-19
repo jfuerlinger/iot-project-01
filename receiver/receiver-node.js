@@ -1,6 +1,6 @@
 PubNub = require("pubnub"); //ES5
 //import PubNub from 'pubnub';        //ES6
-
+var channelName = "IoTChannel";
 var pubnub = new PubNub({
     subscribeKey: "sub-c-59ea358c-ace2-11e6-b37b-02ee2ddab7fe",
     publishKey: "pub-c-aec2c9d2-5afc-4677-993a-27da78960aec",
@@ -49,7 +49,9 @@ pubnub.addListener({
     }
 });
 
+console.log("Subscribing ...");
 pubnub.subscribe({
-    channels: ["hello_world"],
+    channels: [channelName],
     withPresence: true // also subscribe to presence instances.
 });
+console.log("Done");
