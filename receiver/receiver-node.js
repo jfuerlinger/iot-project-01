@@ -44,11 +44,12 @@ pubnub.addListener({
 
                 exec(cmd, function (error, stdout, stderr) {
 
-                    var readStream = fs.createReadStream(fileName);
-                    cloudinary.uploader.upload(readStream, function (result) {
+                    var streamCloudinary = cloudinary.uploader.upload_stream(function (result) {
                         console.log(result)
                         console.log("Upload done.");
                     });
+                    var streamInput = fs.createReadStream(fileName).pipe(stream)
+
 
                     console.log("Picture taken.");
                 });
