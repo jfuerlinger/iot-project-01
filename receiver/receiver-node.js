@@ -1,5 +1,8 @@
-PubNub = require("pubnub");
+var PubNub = require("pubnub");
 var gpio = require("pi-gpio");
+var exec = require('child_process').exec;
+var moment = require('moment');
+
 
 var channelName = "IoTChannel";
 var gpioLedPin = 7;
@@ -29,6 +32,13 @@ pubnub.addListener({
                 break;
             case "takePicture":
                 console.log("Taking a picture ...");
+                var cmd = "fswebcam ~/Pictures/img_" + moment().format("yyyy-MM-dd_HHmm") + ".jpg";
+
+                exec(cmd, function (error, stdout, stderr) {
+                    console.log("done");
+                });
+                console.log("Done.");
+
                 break;
             case "enableLed":
                 console.log("Enabling the LED ...");
@@ -71,6 +81,6 @@ gpio.open(gpioLedPin, "output");
 console.log(">> Done.");
 
 process.on('SIGINT', function () {
-  console.log('Got SIGINT. Press Control-D to exit.');
-  gpio.close(gpioLedPin);
+    console.log('Got SIGINT. Press Control-D to exit.');
+    gpio.close(gpioLedPin);
 });
