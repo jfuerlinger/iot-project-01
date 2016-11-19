@@ -48,7 +48,7 @@ pubnub.addListener({
                         console.log(result)
                         console.log("Upload done.");
                     });
-                    var streamInput = fs.createReadStream(fileName).pipe(stream)
+                    var streamInput = fs.createReadStream(fileName).pipe(streamCloudinary)
 
 
                     console.log("Picture taken.");
