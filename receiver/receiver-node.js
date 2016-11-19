@@ -35,9 +35,8 @@ pubnub.addListener({
                 var cmd = "fswebcam ~/Pictures/img_" + moment().format("yyyy-MM-dd_HHmm") + ".jpg";
 
                 exec(cmd, function (error, stdout, stderr) {
-                    console.log("done");
+                    console.log("Done.");
                 });
-                console.log("Done.");
 
                 break;
             case "enableLed":
