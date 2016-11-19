@@ -51,6 +51,9 @@ pubnub.addListener({
                     var streamCloudinary = cloudinary.uploader.upload_stream(function (result) {
                         console.log(result)
                         console.log("Upload done.");
+
+                        fs.unlinkSync(fileName);
+                        console.log("File deleted.")
                     });
                     var streamInput = fs.createReadStream(fileName).pipe(streamCloudinary);
                 }, 5000);
