@@ -18,7 +18,7 @@ pubnub.addListener({
 
         console.log("Received command: " + msg.command);
         switch (msg.command) {
-            case "sendMessage":
+            case "displayMessage":
                 console.log("Received message: " + msg.message);
                 break;
             case "takePicture":
