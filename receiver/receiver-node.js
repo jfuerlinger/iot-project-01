@@ -40,9 +40,11 @@ pubnub.addListener({
                 var fileName = "~/Pictures/img_" + moment().format("YYYYMMD_HHmmss") + ".jpg";
                 console.log(fileName);
                 var cmd = "fswebcam " + fileName;
+                console.log(cmd);
 
                 exec(cmd, function (error, stdout, stderr) {
 
+                    console.log(error);
                     cloudinary.uploader.upload(fileName, function (result) {
                         console.log(result)
                     });
