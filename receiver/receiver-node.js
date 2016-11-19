@@ -2,6 +2,7 @@ var PubNub = require("pubnub");
 var gpio = require("pi-gpio");
 var exec = require('child_process').exec;
 var moment = require('moment');
+var cloudinary = require('cloudinary');
 
 
 var channelName = "IoTChannel";
@@ -13,7 +14,11 @@ var pubnub = new PubNub({
     ssl: true
 });
 
-
+cloudinary.config({
+    cloud_name: 'dmhyq8qap',
+    api_key: '359498475116885',
+    api_secret: 'hlyvhQR2KYB-caXrVMTdl9GJIU4'
+});
 
 
 pubnub.addListener({
@@ -32,9 +37,15 @@ pubnub.addListener({
                 break;
             case "takePicture":
                 console.log("Taking a picture ...");
-                var cmd = "fswebcam ~/Pictures/img_" + moment().format("yyyy-MM-dd_HHmm") + ".jpg";
+                var fileName = "~/Pictures/img_" + moment().format("YYYY-MM-Do_HHmm") + ".jpg";
+                var cmd = "fswebcam " + fileName;
 
                 exec(cmd, function (error, stdout, stderr) {
+
+                    cloudinary.uploader.upload(fileName, function (result) {
+                        console.log(result)
+                    });
+
                     console.log("Done.");
                 });
 
