@@ -40,7 +40,10 @@ pubnub.addListener({
             case "performMeasurement":
                 var cmd = "./tools/sht21 S";
 
-                exec(cmd, function (error, stdout, stderr) {
+                var sht21Process = exec(cmd, function (error, stdout, stderr) {
+                    if (stdout)
+                        console.log(stdout);
+
                     sendCommand("saveMeasurement", {
                         type: "humidity",
                         value: 10.5
@@ -49,7 +52,7 @@ pubnub.addListener({
                 });
 
                 break;
-            
+
             case "displayMessage":
                 console.log("Received message: " + msg.payload.message);
                 break;
