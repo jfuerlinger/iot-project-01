@@ -14,7 +14,8 @@ var gpioLedPin = 40;
 var pubnub = new PubNub({
     subscribeKey: "sub-c-59ea358c-ace2-11e6-b37b-02ee2ddab7fe",
     publishKey: "pub-c-aec2c9d2-5afc-4677-993a-27da78960aec",
-    ssl: true
+    ssl: true,
+    logVerbosity: false
 });
 
 cloudinary.config({
@@ -22,7 +23,6 @@ cloudinary.config({
     api_key: '359498475116885',
     api_secret: 'hlyvhQR2KYB-caXrVMTdl9GJIU4'
 });
-
 
 
 
