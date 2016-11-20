@@ -9,6 +9,7 @@ var ubidots = require('ubidots');
 
 var channelName = "IoTChannel";
 var gpioLedPin = 40;
+var measurementInterval = null;
 
 var ubidotsClient = ubidots.createClient("a60c5aeb2133f52c518517ce2870f8e5807aca1c");
 
@@ -42,6 +43,63 @@ function sendCommand(command, isRequest, payload) {
     );
 }
 
+function uploadMeasurement() {
+    var cmd = "./device/tools/sht21 S";
+
+    var sht21Process = exec(cmd, function (error, stdout, stderr) {
+        if (error) console.log("ERROR: " + error);
+
+        var content = stdout.replace("\n", "");
+        var arr = content.split("\t");
+        var temperature = arr[0];
+        var humidity = arr[1];
+
+        ubidotsClient.auth(function () {
+            // this.getDatasources(function (err, data) {
+            //     console.log(data.results);
+            // });
+
+            //var ds = this.getDatasource("fujo-pi-01");
+
+            // ds.getVariables(function (err, data) {
+            //     console.log(data.results);
+            // });
+
+            // ds.getDetails(function (err, details) {
+            //     console.log(details);
+            // });
+
+            var varTemperature = this.getVariable("5831836a7625421d93d5461b");
+            var varHumidity = this.getVariable("583183637625421d02b274be");
+
+            // varTemperature.getDetails(function (err, details) {
+            //     console.log(details);
+            // });
+
+            // varHumidity.getDetails(function (err, details) {
+            //     console.log(details);
+            // });
+
+            varTemperature.saveValue(temperature.substr(0, temperature.indexOf('.')));
+            // varTemperature.getValues(function (err, data) {
+            //     console.log(data.results);
+            // });
+
+            varHumidity.saveValue(humidity);
+            // varHumidity.getValues(function (err, data) {
+            //     console.log(data.results);
+            // });
+
+            sendCommand("uploadMeasurement", false, {
+                temperature: temperature,
+                humidity: humidity
+            });
+        });
+
+        console.log("Measurment completed.");
+    });
+}
+
 
 pubnub.addListener({
 
@@ -57,6 +115,37 @@ pubnub.addListener({
             console.log(m);
 
             switch (msg.command) {
+                case "startMeasurement":
+
+                    if (measurementInterval == null) {
+                        measurementInterval = setInterval(uploadMeasurement, 5000);
+                        sendCommand("startMeasurement", false, {
+                            success: true
+                        });
+                    } else {
+                        sendCommand("startMeasurement", false, {
+                            success: false,
+                            message: "Measurement in progress. Stop the Measurement a priori!"
+                        });
+                    }
+
+                    break;
+
+                case "stopMeasurement":
+
+                    if (measurementInterval != null) {
+                        measurementInterval = clearInterval(measurementInterval);
+                        sendCommand("stopMeasurement", false, {
+                            success: true
+                        });
+                    } else {
+                        sendCommand("stopMeasurement", false, {
+                            success: false,
+                            message: "Measurement not running!"
+                        });
+                    }
+
+                    break;
                 case "getCurrentUser":
                     var cmd = "echo $USER";
 
@@ -73,62 +162,9 @@ pubnub.addListener({
 
                     break;
 
-                case "uploadMeasurment":
+                case "uploadMeasurement":
 
-                    var cmd = "./device/tools/sht21 S";
-
-                    var sht21Process = exec(cmd, function (error, stdout, stderr) {
-                        if (error) console.log("ERROR: " + error);
-
-                        var content = stdout.replace("\n", "");
-                        var arr = content.split("\t");
-                        var temperature = arr[0];
-                        var humidity = arr[1];
-
-                        ubidotsClient.auth(function () {
-                            // this.getDatasources(function (err, data) {
-                            //     console.log(data.results);
-                            // });
-
-                            //var ds = this.getDatasource("fujo-pi-01");
-
-                            // ds.getVariables(function (err, data) {
-                            //     console.log(data.results);
-                            // });
-
-                            // ds.getDetails(function (err, details) {
-                            //     console.log(details);
-                            // });
-
-                            var varTemperature = this.getVariable("5831836a7625421d93d5461b");
-                            var varHumidity = this.getVariable("583183637625421d02b274be");
-
-                            // varTemperature.getDetails(function (err, details) {
-                            //     console.log(details);
-                            // });
-
-                            // varHumidity.getDetails(function (err, details) {
-                            //     console.log(details);
-                            // });
-
-                            varTemperature.saveValue(temperature.substr(0, temperature.indexOf('.')));
-                            // varTemperature.getValues(function (err, data) {
-                            //     console.log(data.results);
-                            // });
-
-                            varHumidity.saveValue(humidity);
-                            // varHumidity.getValues(function (err, data) {
-                            //     console.log(data.results);
-                            // });
-
-                            sendCommand("uploadMeasurement", false, {
-                                temperature: temperature,
-                                humidity: humidity
-                            });
-                        });
-
-                        console.log("Measurment completed.");
-                    });
+                    uploadMeasurement();
 
                     break;
 
