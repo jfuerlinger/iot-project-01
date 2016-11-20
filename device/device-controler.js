@@ -41,7 +41,7 @@ pubnub.addListener({
                 var cmd = "./tools/sht21 S";
 
                 var sht21Process = exec(cmd, function (error, stdout, stderr) {
-                    if (stdout)
+                    //if (stdout)
                         console.log(stdout);
 
                     sendCommand("saveMeasurement", {
