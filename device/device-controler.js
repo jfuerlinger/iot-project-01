@@ -86,22 +86,22 @@ pubnub.addListener({
                         var humidity = arr[1];
 
                         ubidotsClient.auth(function () {
-                            this.getDatasources(function (err, data) {
-                                console.log(data.results);
-                            });
+                            // this.getDatasources(function (err, data) {
+                            //     console.log(data.results);
+                            // });
 
-                            var ds = this.getDatasource("fujo-pi-01");
+                            //var ds = this.getDatasource("fujo-pi-01");
 
-                            ds.getVariables(function (err, data) {
-                                console.log(data.results);
-                            });
+                            // ds.getVariables(function (err, data) {
+                            //     console.log(data.results);
+                            // });
 
-                            ds.getDetails(function (err, details) {
-                                console.log(details);
-                            });
+                            // ds.getDetails(function (err, details) {
+                            //     console.log(details);
+                            // });
 
                             var varTemperature = this.getVariable("5831836a7625421d93d5461b");
-                            //var varHumidity = this.getVariable("583183637625421d02b274be");
+                            var varHumidity = this.getVariable("583183637625421d02b274be");
 
                             // varTemperature.getDetails(function (err, details) {
                             //     console.log(details);
@@ -116,15 +116,15 @@ pubnub.addListener({
                             //     console.log(data.results);
                             // });
 
-                            // varHumidity.saveValue(humidity);
+                            varHumidity.saveValue(humidity);
                             // varHumidity.getValues(function (err, data) {
                             //     console.log(data.results);
                             // });
 
-                            // sendCommand("uploadMeasurement", false, {
-                            //     temperature: temperature,
-                            //     humidity: humidity
-                            // });
+                            sendCommand("uploadMeasurement", false, {
+                                temperature: temperature,
+                                humidity: humidity
+                            });
                         });
 
                         console.log("Measurment completed.");
