@@ -112,14 +112,14 @@ pubnub.addListener({
                             });
 
                             varTemperature.saveValue(temperature);
-                            varTemperature.getValues(function (err, data) {
-                                console.log(data.results);
-                            });
+                            // varTemperature.getValues(function (err, data) {
+                            //     console.log(data.results);
+                            // });
 
                             varHumidity.saveValue(humidity);
-                            varHumidity.getValues(function (err, data) {
-                                console.log(data.results);
-                            });
+                            // varHumidity.getValues(function (err, data) {
+                            //     console.log(data.results);
+                            // });
 
                             sendCommand("uploadMeasurement", false, {
                                 temperature: temperature,
