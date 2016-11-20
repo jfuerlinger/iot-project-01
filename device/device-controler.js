@@ -101,7 +101,7 @@ pubnub.addListener({
                             });
 
                             var varTemperature = this.getVariable("5831836a7625421d93d5461b");
-                            var varHumidity = this.getVariable("583183637625421d02b274be");
+                            //var varHumidity = this.getVariable("583183637625421d02b274be");
 
                             // varTemperature.getDetails(function (err, details) {
                             //     console.log(details);
@@ -121,10 +121,10 @@ pubnub.addListener({
                             //     console.log(data.results);
                             // });
 
-                            sendCommand("uploadMeasurement", false, {
-                                temperature: temperature,
-                                humidity: humidity
-                            });
+                            // sendCommand("uploadMeasurement", false, {
+                            //     temperature: temperature,
+                            //     humidity: humidity
+                            // });
                         });
 
                         console.log("Measurment completed.");
