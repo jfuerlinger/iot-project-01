@@ -51,8 +51,6 @@ pubnub.addListener({
         var pubTT = m.timetoken; // Publish timetoken
         var msg = m.message; // The Payload
 
-        
-
         if (msg.type === "Request") {
             console.log("Received command: " + msg.command);
             console.log(m);
@@ -83,9 +81,14 @@ pubnub.addListener({
                         console.log("STDOUT: " + stdout);
                         console.log("STDERR: " + stderr);
 
+                        var content = stdout.replace("\n", "");
+                        var arr = content.split("\t");
+                        var temperature = arr[0];
+                        var humidity = arr[1];
+
                         sendCommand("getMeasurement", false, {
-                            type: "humidity",
-                            value: 10.5
+                            temperature: temperature,
+                            humidity: humidity
                         });
                         console.log("Measurment completed.");
                     });
