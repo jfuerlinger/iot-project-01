@@ -41,6 +41,8 @@ pubnub.addListener({
                 var cmd = "echo $USER";
 
                 var currentUserProcess = exec(cmd, function (error, stdout, stderr) {
+                    if(error) console.log(error);
+                    
                     console.log(stdout);
 
                     sendCommand("getCurrentUserResponse", {
