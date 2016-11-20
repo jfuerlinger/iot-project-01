@@ -118,6 +118,7 @@ pubnub.addListener({
                 case "startMeasurement":
 
                     if (measurementInterval == null) {
+                        uploadMeasurement();
                         measurementInterval = setInterval(uploadMeasurement, 5000);
                         sendCommand("startMeasurement", false, {
                             success: true
