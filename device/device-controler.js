@@ -117,7 +117,7 @@ function sendCommand(command, payload) {
             }
         },
         function (status, response) {
-            console.log(status, response);
+            //console.log(status, response);
         }
     );
 }
