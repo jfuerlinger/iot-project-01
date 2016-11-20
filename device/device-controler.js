@@ -103,13 +103,13 @@ pubnub.addListener({
                             var varTemperature = this.getVariable("5831836a7625421d93d5461b");
                             var varHumidity = this.getVariable("583183637625421d02b274be");
 
-                            varTemperature.getDetails(function (err, details) {
-                                console.log(details);
-                            });
+                            // varTemperature.getDetails(function (err, details) {
+                            //     console.log(details);
+                            // });
 
-                            varHumidity.getDetails(function (err, details) {
-                                console.log(details);
-                            });
+                            // varHumidity.getDetails(function (err, details) {
+                            //     console.log(details);
+                            // });
 
                             varTemperature.saveValue(temperature.substr(0, temperature.indexOf('.')));
                             // varTemperature.getValues(function (err, data) {
