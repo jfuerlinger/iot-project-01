@@ -24,19 +24,6 @@ cloudinary.config({
 });
 
 
-function sendCommand(command, payload) {
-    pubnub.publish({
-            channel: channelName,
-            message: {
-                command: command,
-                payload: payload
-            }
-        },
-        function (status, response) {
-            console.log(status, response);
-        }
-    );
-}
 
 
 pubnub.addListener({
@@ -101,7 +88,7 @@ pubnub.addListener({
                 gpio.write(gpioLedPin, 0);
                 console.log("Done.");
                 break;
-                
+
         }
 
     },
@@ -120,6 +107,21 @@ pubnub.addListener({
         // handle status
     }
 });
+
+function sendCommand(command, payload) {
+    pubnub.publish({
+            channel: channelName,
+            message: {
+                command: command,
+                payload: payload
+            }
+        },
+        function (status, response) {
+            console.log(status, response);
+        }
+    );
+}
+
 
 console.log(">> Subscribing ...");
 pubnub.subscribe({
