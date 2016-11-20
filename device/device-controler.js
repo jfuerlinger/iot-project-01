@@ -4,12 +4,13 @@ var exec = require('child_process').exec;
 var moment = require('moment');
 var cloudinary = require('cloudinary');
 var fs = require('fs');
+var ubidots = require('ubidots');
 
 
 var channelName = "IoTChannel";
 var gpioLedPin = 40;
 
-
+var ubidotsClient = ubidots.createClient("a60c5aeb2133f52c518517ce2870f8e5807aca1c");
 
 var pubnub = new PubNub({
     subscribeKey: "sub-c-59ea358c-ace2-11e6-b37b-02ee2ddab7fe",
@@ -68,6 +69,60 @@ pubnub.addListener({
                             user: stdout
                         });
                         console.log("Check completed.");
+                    });
+
+                    break;
+
+                case "uploadMeasurment":
+
+                    var cmd = "./device/tools/sht21 S";
+
+                    var sht21Process = exec(cmd, function (error, stdout, stderr) {
+                        if (error) console.log("ERROR: " + error);
+
+                        var content = stdout.replace("\n", "");
+                        var arr = content.split("\t");
+                        var temperature = arr[0];
+                        var humidity = arr[1];
+
+                        ubidotsClient.auth(function () {
+                            this.getDatasources(function (err, data) {
+                                console.log(data.results);
+                            });
+
+                            var ds = this.getDatasource("fujo-pi-01");
+
+                            ds.getVariables(function (err, data) {
+                                console.log(data.results);
+                            });
+
+                            ds.getDetails(function (err, details) {
+                                console.log(details);
+                            });
+
+                            var varTemperature = this.getVariable("Temperature");
+                            var varHumidity = this.getVariable("Humidity");
+
+                            varTemperature.getDetails(function (err, details) {
+                                console.log(details);
+                            });
+
+                            varHumidity.getDetails(function (err, details) {
+                                console.log(details);
+                            });
+
+                            varTemperature.saveValue(temperature);
+                            varTemperature.getValues(function (err, data) {
+                                console.log(data.results);
+                            });
+
+                            varHumidity.saveValue(humidity);
+                            varHumidity.getValues(function (err, data) {
+                                console.log(data.results);
+                            });
+                        });
+
+                        console.log("Measurment completed.");
                     });
 
                     break;
