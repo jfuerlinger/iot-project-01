@@ -61,9 +61,12 @@ pubnub.addListener({
                     console.log("Measurment completed.");
                 });
 
+                break;
+            
             case "displayMessage":
                 console.log("Received message: " + msg.payload.message);
                 break;
+
             case "takePicture":
                 console.log("Taking a picture ...");
                 var fileName = "/home/pi/Pictures/img_" + moment().format("YYYYMMD_HHmmss") + ".jpg";
@@ -85,18 +88,20 @@ pubnub.addListener({
                     var streamInput = fs.createReadStream(fileName).pipe(streamCloudinary);
                 }, 5000);
 
-
                 break;
+
             case "enableLed":
                 console.log("Enabling the LED ...");
                 gpio.write(gpioLedPin, 1);
                 console.log("Done.");
                 break;
+
             case "disableLed":
                 console.log("Disabling the LED ...");
                 gpio.write(gpioLedPin, 0);
                 console.log("Done.");
                 break;
+                
         }
 
     },
