@@ -76,10 +76,7 @@ pubnub.addListener({
                     var cmd = "./device/tools/sht21 S";
 
                     var sht21Process = exec(cmd, function (error, stdout, stderr) {
-                        //if (stdout)
-                        console.log("ERROR: " + error);
-                        console.log("STDOUT: " + stdout);
-                        console.log("STDERR: " + stderr);
+                        if (error) console.log("ERROR: " + error);
 
                         var content = stdout.replace("\n", "");
                         var arr = content.split("\t");
