@@ -9,6 +9,8 @@ var fs = require('fs');
 var channelName = "IoTChannel";
 var gpioLedPin = 40;
 
+
+
 var pubnub = new PubNub({
     subscribeKey: "sub-c-59ea358c-ace2-11e6-b37b-02ee2ddab7fe",
     publishKey: "pub-c-aec2c9d2-5afc-4677-993a-27da78960aec",
@@ -22,6 +24,21 @@ cloudinary.config({
 });
 
 
+function sendCommand(command, payload) {
+    pubnub.publish({
+            channel: channelName,
+            message: {
+                command: command,
+                payload: payload
+            }
+        },
+        function (status, response) {
+            console.log(status, response);
+        }
+    );
+}
+
+
 pubnub.addListener({
 
     message: function (m) {
@@ -33,8 +50,19 @@ pubnub.addListener({
 
         console.log("Received command: " + msg.command);
         switch (msg.command) {
+            case "performMeasurement":
+                var cmd = "./tools/sht21 S";
+
+                exec(cmd, function (error, stdout, stderr) {
+                    sendCommand("saveMeasurement", {
+                        type: "humidity",
+                        value: 10.5
+                    });
+                    console.log("Measurment completed.");
+                });
+
             case "displayMessage":
-                console.log("Received message: " + msg.message);
+                console.log("Received message: " + msg.payload.message);
                 break;
             case "takePicture":
                 console.log("Taking a picture ...");
@@ -43,7 +71,6 @@ pubnub.addListener({
                 console.log(cmd);
 
                 exec(cmd, function (error, stdout, stderr) {
-
                     console.log("Picture taken.");
                 });
 

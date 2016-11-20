@@ -4,7 +4,8 @@
     <fieldset>
         <legend>Send Message</legend>
         <input type="text" id="txtMessage" />
-        <input type="button" value="Send message" onclick="sendMessage();" />
+        <input type="button" value="Send message" onclick="sendCommand('displayMessage', { message: document.getElementById('txtMessage').value});"
+        />
     </fieldset>
     <fieldset>
         <legend>Send Command</legend>
@@ -12,8 +13,9 @@
             <option value="takePicture">Take Picture</option>
             <option value="enableLed">Enable Led</option>
             <option value="disableLed">Disable Led</option>
+            <option value="performMeasurement">Perform Measurement</option>
         </select>
-        <input type="button" value="Send message" onclick="sendCommand();" />
+        <input type="button" value="Send message" onclick="sendCommand(document.getElementById('cmbCommand').value, null);" />
     </fieldset>
     <!-- View the Full Documentation. -->
     <!-- Include the PubNub Library -->
@@ -24,28 +26,13 @@
 var pubnub = null;
 var channelName = "IoTChannel"; 
 
-
-function sendMessage() {
+function sendCommand(command, payload) {
     pubnub.publish(
         {
             channel : channelName,
             message : { 
-                command: "displayMessage",
-                message: document.getElementById("txtMessage").value 
-            }
-        }, 
-        function(status, response) {
-                console.log(status, response);
-        }
-    );
-}
-
-function sendCommand() {
-    pubnub.publish(
-        {
-            channel : channelName,
-            message : { 
-                command:  document.getElementById("cmbCommand").value
+                command: command,
+                payload: payload
             }
         }, 
         function(status, response) {
@@ -63,18 +50,7 @@ function init() {
       subscribeKey: 'sub-c-59ea358c-ace2-11e6-b37b-02ee2ddab7fe',
       logVerbosity: false
     })
-       
-    // function publishSampleMessage() {
-    //     console.log("Since we're publishing on subscribe connectEvent, we're sure we'll receive the following publish.");
-    //     var publishConfig = {
-    //         channel : "hello_world",
-    //         message : "Hello from PubNub Docs!"
-    //     }
-    //     pubnub.publish(publishConfig, function(status, response) {
-    //         console.log(status, response);
-    //     })
-    // }
-       
+
     pubnub.addListener({
         status: function(statusEvent) {
             console.log(statusEvent.Category);
@@ -83,9 +59,17 @@ function init() {
                 //publishSampleMessage();
             }
         },
-        message: function(message) {
-            console.log("New Message!!", message);
-            //console.log("Message received: " + message.message);
+        message: function(m) {
+            var channelName = m.channel; // The channel for which the message belongs
+            var channelGroup = m.subscription; // The channel group or wildcard subscription match (if exists)
+            var pubTT = m.timetoken; // Publish timetoken
+            var msg = m.message; // The Payload
+
+            switch (msg.command) {
+                case "saveMeasurement":
+                    console.log(msg.payload.type + ": " + msg.payload.value);
+                break;
+            }
         },
         presence: function(presenceEvent) {
             // handle presence
