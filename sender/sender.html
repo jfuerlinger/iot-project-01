@@ -17,7 +17,11 @@
             <option value="getCurrentUserRequest">Get Current User</option>
         </select>
         <input type="button" value="Send message" onclick="sendCommand(document.getElementById('cmbCommand').value, null);" />
+        <br>
+        <textarea id="txtOutput" rows="50" cols="75" ></textarea>
     </fieldset>
+
+
     <!-- View the Full Documentation. -->
     <!-- Include the PubNub Library -->
     <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.2.5.js"></script>
@@ -66,6 +70,8 @@ function init() {
             var channelGroup = m.subscription; // The channel group or wildcard subscription match (if exists)
             var pubTT = m.timetoken; // Publish timetoken
             var msg = m.message; // The Payload
+
+            document.getElementById("txtOutput").value =  JSON.stringify(msg, null, 4);   
 
             switch (msg.command) {
                 case "getMeasurementResponse":
