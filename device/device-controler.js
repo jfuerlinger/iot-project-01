@@ -111,7 +111,7 @@ pubnub.addListener({
                                 console.log(details);
                             });
 
-                            varTemperature.saveValue(temperature.substr(0, addy.indexOf('.')));
+                            varTemperature.saveValue(temperature.substr(0, temperature.indexOf('.')));
                             // varTemperature.getValues(function (err, data) {
                             //     console.log(data.results);
                             // });
