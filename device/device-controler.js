@@ -116,7 +116,7 @@ pubnub.addListener({
                             //     console.log(data.results);
                             // });
 
-                            varHumidity.saveValue(humidity);
+                            // varHumidity.saveValue(humidity);
                             // varHumidity.getValues(function (err, data) {
                             //     console.log(data.results);
                             // });
