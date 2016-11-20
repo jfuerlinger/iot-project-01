@@ -4,7 +4,7 @@
     <fieldset>
         <legend>Send Message</legend>
         <input type="text" id="txtMessage" />
-        <input type="button" value="Send message" onclick="sendCommand('displayMessage', true, { message: 'TEST: ' + document.getElementById('txtMessage').value});"
+        <input type="button" value="Send message" onclick="sendCommand('displayMessage', true, { message: document.getElementById('txtMessage').value});"
         />
     </fieldset>
     <fieldset>
