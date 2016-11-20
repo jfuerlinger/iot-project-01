@@ -13,7 +13,8 @@
             <option value="takePicture">Take Picture</option>
             <option value="enableLed">Enable Led</option>
             <option value="disableLed">Disable Led</option>
-            <option value="performMeasurement">Perform Measurement</option>
+            <option value="getMeasurementRequest">Perform Measurement</option>
+            <option value="getCurrentUserRequest">Get Current User</option>
         </select>
         <input type="button" value="Send message" onclick="sendCommand(document.getElementById('cmbCommand').value, null);" />
     </fieldset>
@@ -67,8 +68,12 @@ function init() {
             var msg = m.message; // The Payload
 
             switch (msg.command) {
-                case "saveMeasurement":
+                case "getMeasurementResponse":
                     console.log(msg.payload.type + ": " + msg.payload.value);
+                break;
+
+                case "getCurrentUserResponse":
+                    console.log("Current user: " + msg.payload.user);
                 break;
             }
         },

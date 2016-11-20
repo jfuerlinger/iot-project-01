@@ -37,14 +37,28 @@ pubnub.addListener({
 
         console.log("Received command: " + msg.command);
         switch (msg.command) {
-            case "performMeasurement":
+            case "getCurrentUserRequest":
+                var cmd = "echo $USER";
+
+                var currentUserProcess = exec(cmd, function (error, stdout, stderr) {
+                    console.log(stdout);
+
+                    sendCommand("getCurrentUserResponse", {
+                        user: stdout
+                    });
+                    console.log("Check completed.");
+                });
+
+                break;
+
+            case "getMeasurementRequest":
                 var cmd = "./tools/sht21 S";
 
                 var sht21Process = exec(cmd, function (error, stdout, stderr) {
                     //if (stdout)
-                        console.log(stdout);
+                    console.log(stdout);
 
-                    sendCommand("saveMeasurement", {
+                    sendCommand("getMeasurementResponse", {
                         type: "humidity",
                         value: 10.5
                     });
