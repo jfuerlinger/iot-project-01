@@ -60,7 +60,9 @@ pubnub.addListener({
 
                 var sht21Process = exec(cmd, function (error, stdout, stderr) {
                     //if (stdout)
-                    console.log(stdout);
+                    console.log("ERROR: " + error);
+                    console.log("STDOUT: " + stdout);
+                    console.log("STDERR: " + stderr);
 
                     sendCommand("getMeasurementResponse", {
                         type: "humidity",
