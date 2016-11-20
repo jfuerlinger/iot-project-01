@@ -35,6 +35,8 @@ pubnub.addListener({
         var pubTT = m.timetoken; // Publish timetoken
         var msg = m.message; // The Payload
 
+        console.log(m);
+
         console.log("Received command: " + msg.command);
         switch (msg.command) {
             case "getCurrentUserRequest":
@@ -42,7 +44,7 @@ pubnub.addListener({
 
                 var currentUserProcess = exec(cmd, function (error, stdout, stderr) {
                     if(error) console.log(error);
-                    
+
                     console.log(stdout);
 
                     sendCommand("getCurrentUserResponse", {
