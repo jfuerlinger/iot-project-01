@@ -4,7 +4,7 @@
     <fieldset>
         <legend>Send Message</legend>
         <input type="text" id="txtMessage" />
-        <input type="button" value="Send message" onclick="sendCommand('displayMessage', { message: document.getElementById('txtMessage').value});"
+        <input type="button" value="Send message" onclick="sendCommand('displayMessage', true, { message: document.getElementById('txtMessage').value});"
         />
     </fieldset>
     <fieldset>
@@ -13,15 +13,14 @@
             <option value="takePicture">Take Picture</option>
             <option value="enableLed">Enable Led</option>
             <option value="disableLed">Disable Led</option>
-            <option value="getMeasurementRequest">Perform Measurement</option>
-            <option value="getCurrentUserRequest">Get Current User</option>
+            <option value="getMeasurement">Perform Measurement</option>
+            <option value="getCurrentUser">Get Current User</option>
         </select>
-        <input type="button" value="Send message" onclick="sendCommand(document.getElementById('cmbCommand').value, null);" />
+        <input type="button" value="Send message" onclick="sendCommand(document.getElementById('cmbCommand').value, true, null);"
+        />
         <br>
-        <textarea id="txtOutput" rows="50" cols="75" ></textarea>
+        <textarea id="txtOutput" rows="50" cols="75"></textarea>
     </fieldset>
-
-
     <!-- View the Full Documentation. -->
     <!-- Include the PubNub Library -->
     <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.2.5.js"></script>
@@ -31,12 +30,13 @@
 var pubnub = null;
 var channelName = "IoTChannel"; 
 
-function sendCommand(command, payload) {
+function sendCommand(command, isRequest, payload) {
     pubnub.publish(
         {
             channel : channelName,
             message : { 
                 command: command,
+                type: isRequest ? "Request" : "Response",
                 payload: payload
             }
         }, 
@@ -71,17 +71,23 @@ function init() {
             var pubTT = m.timetoken; // Publish timetoken
             var msg = m.message; // The Payload
 
+        if (msg.type === "Response") {
+            console.log("Received command: " + msg.command);
+            console.log(m);
+
             document.getElementById("txtOutput").value =  JSON.stringify(msg, null, 4);   
 
             switch (msg.command) {
-                case "getMeasurementResponse":
+                case "getMeasurement":
                     console.log(msg.payload.type + ": " + msg.payload.value);
                 break;
 
-                case "getCurrentUserResponse":
+                case "getCurrentUser":
                     console.log("Current user: " + msg.payload.user);
                 break;
-            }
+            }//switch
+
+        }//if
         },
         presence: function(presenceEvent) {
             // handle presence

@@ -26,6 +26,22 @@ cloudinary.config({
 
 
 
+function sendCommand(command, isRequest, payload) {
+    pubnub.publish({
+            channel: channelName,
+            message: {
+                command: command,
+                type: isRequest ? "Request" : "Response",
+                payload: payload
+            }
+        },
+        function (status, response) {
+            //console.log(status, response);
+        }
+    );
+}
+
+
 pubnub.addListener({
 
     message: function (m) {
@@ -35,84 +51,97 @@ pubnub.addListener({
         var pubTT = m.timetoken; // Publish timetoken
         var msg = m.message; // The Payload
 
-        console.log(m);
+        
 
-        console.log("Received command: " + msg.command);
-        switch (msg.command) {
-            case "getCurrentUserRequest":
-                var cmd = "echo $USER";
+        if (msg.type === "Request") {
+            console.log("Received command: " + msg.command);
+            console.log(m);
 
-                var currentUserProcess = exec(cmd, function (error, stdout, stderr) {
-                    if(error) console.log(error);
+            switch (msg.command) {
+                case "getCurrentUser":
+                    var cmd = "echo $USER";
 
-                    console.log(stdout);
+                    var currentUserProcess = exec(cmd, function (error, stdout, stderr) {
+                        if (error) console.log(error);
 
-                    sendCommand("getCurrentUserResponse", {
-                        user: stdout
+                        console.log(stdout);
+
+                        sendCommand("getCurrentUser", false, {
+                            user: stdout
+                        });
+                        console.log("Check completed.");
                     });
-                    console.log("Check completed.");
-                });
 
-                break;
+                    break;
 
-            case "getMeasurementRequest":
-                var cmd = "sudo ./device/tools/sht21 S";
+                case "getMeasurement":
+                    var cmd = "./device/tools/sht21 S";
 
-                var sht21Process = exec(cmd, function (error, stdout, stderr) {
-                    //if (stdout)
-                    console.log("ERROR: " + error);
-                    console.log("STDOUT: " + stdout);
-                    console.log("STDERR: " + stderr);
+                    var sht21Process = exec(cmd, function (error, stdout, stderr) {
+                        //if (stdout)
+                        console.log("ERROR: " + error);
+                        console.log("STDOUT: " + stdout);
+                        console.log("STDERR: " + stderr);
 
-                    sendCommand("getMeasurementResponse", {
-                        type: "humidity",
-                        value: 10.5
+                        sendCommand("getMeasurement", false, {
+                            type: "humidity",
+                            value: 10.5
+                        });
+                        console.log("Measurment completed.");
                     });
-                    console.log("Measurment completed.");
-                });
 
-                break;
+                    break;
 
-            case "displayMessage":
-                console.log("Received message: " + msg.payload.message);
-                break;
+                case "displayMessage":
+                    console.log("Received message: " + msg.payload.message);
+                    break;
 
-            case "takePicture":
-                console.log("Taking a picture ...");
-                var fileName = "/home/pi/Pictures/img_" + moment().format("YYYYMMD_HHmmss") + ".jpg";
-                var cmd = "fswebcam " + fileName;
-                console.log(cmd);
+                case "takePicture":
+                    console.log("Taking a picture ...");
+                    var fileName = "/home/pi/Pictures/img_" + moment().format("YYYYMMD_HHmmss") + ".jpg";
+                    var cmd = "fswebcam " + fileName;
+                    console.log(cmd);
 
-                exec(cmd, function (error, stdout, stderr) {
-                    console.log("Picture taken.");
-                });
-
-                setTimeout(function () {
-                    var streamCloudinary = cloudinary.uploader.upload_stream(function (result) {
-                        console.log(result)
-                        console.log("Upload done.");
-
-                        fs.unlinkSync(fileName);
-                        console.log("File deleted.")
+                    exec(cmd, function (error, stdout, stderr) {
+                        console.log("Picture taken.");
                     });
-                    var streamInput = fs.createReadStream(fileName).pipe(streamCloudinary);
-                }, 5000);
 
-                break;
+                    setTimeout(function () {
+                        var streamCloudinary = cloudinary.uploader.upload_stream(function (result) {
+                            console.log(result)
+                            console.log("Upload done.");
 
-            case "enableLed":
-                console.log("Enabling the LED ...");
-                gpio.write(gpioLedPin, 1);
-                console.log("Done.");
-                break;
+                            fs.unlinkSync(fileName);
+                            console.log("File deleted.")
+                        });
+                        var streamInput = fs.createReadStream(fileName).pipe(streamCloudinary);
+                    }, 5000);
 
-            case "disableLed":
-                console.log("Disabling the LED ...");
-                gpio.write(gpioLedPin, 0);
-                console.log("Done.");
-                break;
+                    break;
 
-        }
+                case "enableLed":
+                    console.log("Enabling the LED ...");
+                    gpio.write(gpioLedPin, 1);
+                    console.log("Done.");
+
+                    sendCommand("enableLed", false, {
+                        success: true
+                    });
+
+                    break;
+
+                case "disableLed":
+                    console.log("Disabling the LED ...");
+                    gpio.write(gpioLedPin, 0);
+                    console.log("Done.");
+
+                    sendCommand("disableLed", false, {
+                        success: true
+                    });
+
+                    break;
+            } //switch
+        } //if
 
     },
     presence: function (p) {
@@ -131,19 +160,6 @@ pubnub.addListener({
     }
 });
 
-function sendCommand(command, payload) {
-    pubnub.publish({
-            channel: channelName,
-            message: {
-                command: command,
-                payload: payload
-            }
-        },
-        function (status, response) {
-            //console.log(status, response);
-        }
-    );
-}
 
 
 console.log(">> Subscribing ...");
