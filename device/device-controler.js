@@ -56,7 +56,7 @@ pubnub.addListener({
                 break;
 
             case "getMeasurementRequest":
-                var cmd = "./device/tools/sht21 S";
+                var cmd = "sudo ./device/tools/sht21 S";
 
                 var sht21Process = exec(cmd, function (error, stdout, stderr) {
                     //if (stdout)
