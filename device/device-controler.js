@@ -100,8 +100,8 @@ pubnub.addListener({
                                 console.log(details);
                             });
 
-                            var varTemperature = this.getVariable("Temperature");
-                            var varHumidity = this.getVariable("Humidity");
+                            var varTemperature = this.getVariable("5831836a7625421d93d5461b");
+                            var varHumidity = this.getVariable("583183637625421d02b274be");
 
                             varTemperature.getDetails(function (err, details) {
                                 console.log(details);
