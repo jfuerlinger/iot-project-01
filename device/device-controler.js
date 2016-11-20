@@ -120,6 +120,11 @@ pubnub.addListener({
                             varHumidity.getValues(function (err, data) {
                                 console.log(data.results);
                             });
+
+                            sendCommand("uploadMeasurement", false, {
+                                temperature: temperature,
+                                humidity: humidity
+                            });
                         });
 
                         console.log("Measurment completed.");
